@@ -22,6 +22,7 @@ formSearch.addEventListener('submit', onSearch)
 const newFindingsApi = new NewFindingsApi()
 
 function onSearch(event) {
+     btnLoadMore.classList.add('is-hidden')
     event.preventDefault();
     newFindingsApi.query = event.currentTarget.elements.query.value
     if (!newFindingsApi.query) {
