@@ -1,6 +1,14 @@
 import NewFindingsApi  from '/apiService.js';
 import './sass/main.scss';
 import makeOneImageNbs from './templates/image-card.hbs'
+import '@pnotify/core/dist/BrightTheme.css';
+import { error } from '@pnotify/core';
+
+function imagesNotFound() {
+  error({
+    text: "Please enter something else"
+  });
+}
 const listForImages = document.querySelector('.gallery')
 
 const formSearch = document.getElementById('search-form');
@@ -16,10 +24,21 @@ const newFindingsApi = new NewFindingsApi()
 function onSearch(event) {
     event.preventDefault();
     newFindingsApi.query = event.currentTarget.elements.query.value
+    if (!newFindingsApi.query) {
+        imagesNotFound()
+        return
+    }
     newFindingsApi.resetPage()
     clearGallery()
-    newFindingsApi.fetchArticles().then(randerImages)
-   btnLoadMore.classList.remove('is-hidden')
+    newFindingsApi.fetchArticles().then(hits => {
+        if (hits.length === 0) {
+            imagesNotFound()
+            return
+        } 
+        randerImages(hits)
+         btnLoadMore.classList.remove('is-hidden')
+    })
+  
  
 }
 
